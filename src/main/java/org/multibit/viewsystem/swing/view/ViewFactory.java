@@ -1,7 +1,11 @@
 package org.multibit.viewsystem.swing.view;
 
+import fenshi.ot.OT_SendPanel;
+import fenshi.ot.OT_ReceivePanel;
+import fenshi.ot.OT_SendPanelv1;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JOptionPane;
 
 import org.multibit.controller.MultiBitController;
 import org.multibit.viewsystem.View;
@@ -107,6 +111,17 @@ public class ViewFactory {
 
         case View.RESET_TRANSACTIONS_VIEW: {
             viewToReturn = new ResetTransactionsPanel(controller, mainFrame);
+            break;
+        }
+            
+        case View.OT_SEND: {
+            viewToReturn = new OT_SendPanel(controller);
+            break;
+        }
+            
+        case View.OT_RECEIVE: {
+            viewToReturn = new OT_ReceivePanel();
+            ((OT_ReceivePanel)viewToReturn).C = controller;
             break;
         }
 

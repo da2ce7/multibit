@@ -24,9 +24,12 @@
 package fenshi.ot;
 
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.StringStack;
 import java.awt.Color;
 import java.util.Locale;
 import javax.swing.BorderFactory;
+import javax.swing.table.DefaultTableModel;
+import org.multibit.controller.MultiBitController;
 import org.multibit.viewsystem.View;
 import org.multibit.viewsystem.swing.MultiBitFrame;
 import org.multibit.viewsystem.swing.view.AddressesPanel;
@@ -37,12 +40,34 @@ import org.multibit.viewsystem.swing.view.DashedBorder;
  * @author shinitei
  */
 public class OT_SendPanel extends javax.swing.JPanel implements View {
-
+    
+    protected MultiBitController controller;
+    
     /**
      * Creates new form OT_ReceivePanel
      */
-    public OT_SendPanel() {
+    public OT_SendPanel(MultiBitController C) {
         initComponents();
+        controller = C;
+
+        jLabel1.setText(controller.getLocaliser().getString("OT_SendPanel.titleLabel"));
+        jLabel2.setText(controller.getLocaliser().getString("OT_SendPanel.adressLabel"));
+        jLabel4.setText(controller.getLocaliser().getString("OT_SendPanel.labelLabel"));
+        jLabel3.setText(controller.getLocaliser().getString("OT_SendPanel.amountLabel"));
+        jButton1.setText(controller.getLocaliser().getString("OT.sendButton"));
+        DefaultTableModel defaultTableModel = new DefaultTableModel(
+                                                      new Object[][]{
+                                                          {"BhD1", "zQ584ZWBqqx5CReL7eW4T8jfV7TwtbkuqG"},
+                                                          {"BhD2", "ToRq17gmCdQWfenShiX46oRG35cNqrIPgB"},
+                                                          {"BhD3", "UmbPn68On8Gk18bi9qVTHWF2QHcB2qVZMT"},
+                                                          {"BhD4", "M6xeONp6FAqFMBLQs7MtwEe48FG8X2LWrm"}
+                                                      },
+                                                      new String[]{
+                                                          controller.getLocaliser().getString("OT_SendPanel.tablecolumn1Title"),
+                                                          controller.getLocaliser().getString("OT_SendPanel.tablecolumn2Title")
+                                                      });
+        Data_Table.setModel(defaultTableModel);
+
     }
 
     /**
@@ -92,7 +117,7 @@ public class OT_SendPanel extends javax.swing.JPanel implements View {
             }
         });
 
-        jLabel1.setText("You want to send OT Asset");
+        jLabel1.setText("Tekst");
 
         javax.swing.GroupLayout Upper_PanelLayout = new javax.swing.GroupLayout(Upper_Panel);
         Upper_Panel.setLayout(Upper_PanelLayout);
@@ -100,8 +125,8 @@ public class OT_SendPanel extends javax.swing.JPanel implements View {
             Upper_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Upper_PanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(Upper_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(Upper_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(Upper_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jButton1)
                         .addGroup(Upper_PanelLayout.createSequentialGroup()

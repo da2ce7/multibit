@@ -1,5 +1,6 @@
 package org.multibit.viewsystem.swing.view.yourwallets;
 
+import fenshi.ot.OTWalletsPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -14,12 +15,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import org.multibit.controller.ActionForward;
 import org.multibit.controller.MultiBitController;
@@ -152,7 +148,7 @@ public class YourWalletsPanel extends JPanel implements View, DataProvider {
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.weightx = 1;
+        constraints.weightx = 0.5;
         constraints.weighty = 0.01;
         constraints.gridwidth = 1;
         constraints.anchor = GridBagConstraints.LINE_START;
@@ -170,7 +166,7 @@ public class YourWalletsPanel extends JPanel implements View, DataProvider {
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridx = 0;
         constraints.gridy = 1;
-        constraints.weightx = 1;
+        constraints.weightx = 0.5;
         constraints.weighty = 0.49;
         constraints.gridwidth = 1;
         constraints.anchor = GridBagConstraints.LINE_START;
@@ -181,7 +177,7 @@ public class YourWalletsPanel extends JPanel implements View, DataProvider {
         constraints.gridy = 2;
         constraints.weightx = 1;
         constraints.weighty = 0.03;
-        constraints.gridwidth = 1;
+        constraints.gridwidth = 2;
         constraints.anchor = GridBagConstraints.LINE_START;
         add(createAddressesHeaderPanel(), constraints);
 
@@ -191,9 +187,31 @@ public class YourWalletsPanel extends JPanel implements View, DataProvider {
         constraints.gridy = 3;
         constraints.weightx = 1;
         constraints.weighty = 0.45;
-        constraints.gridwidth = 1;
+        constraints.gridwidth = 2;
         constraints.anchor = GridBagConstraints.LINE_START;
         add(transactionsPanel, constraints);
+        
+        //ot panel
+        OTWalletsPanel otWalletsPanel = new OTWalletsPanel(controller.getOT_Controller(), controller);
+        otWalletsPanel.setSize(headerPanel.getSize()); // ten sam rozmiar
+        JScrollPane Pane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        Pane.setViewportView(otWalletsPanel);
+        Pane.setViewportBorder(BorderFactory.createEmptyBorder());
+        Pane.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, MultiBitFrame.DARK_BACKGROUND_COLOR.darker()));
+        Pane.getViewport().setBackground(MultiBitFrame.BACKGROUND_COLOR);
+        Pane.getViewport().setOpaque(true);
+        Pane.setComponentOrientation(ComponentOrientation.getOrientation(controller.getLocaliser().getLocale()));
+
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        constraints.weightx = 0.5;
+        constraints.weighty = 0.49;
+        constraints.gridwidth = 1;
+        constraints.gridheight=2;
+        constraints.anchor = GridBagConstraints.LINE_START;
+        add(Pane, constraints);
     }
 
     private JPanel createAddressesHeaderPanel() {

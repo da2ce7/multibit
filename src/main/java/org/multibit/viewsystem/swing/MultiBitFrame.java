@@ -78,6 +78,10 @@ import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.Wallet;
+import fenshi.ot.OT_SendPanelv1;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 /*
  * JFrame displaying Swing version of MultiBit
@@ -267,6 +271,7 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
         contentPane.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
+
         // set the application icon
         ImageIcon imageIcon = createImageIcon(MULTIBIT_ICON_FILE);
         if (imageIcon != null) {
@@ -289,9 +294,10 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
         headerPanel.add(balancePanel, constraints);
 
         JPanel toolBarPanel = addMenuBarAndCreateToolBar(constraints, contentPane);
-        toolBarPanel.setMaximumSize(new Dimension(A_SMALL_NUMBER_OF_PIXELS, TOOLBAR_HEIGHT));
+        //toolBarPanel.setBackground(Color.RED);
+        //toolBarPanel.setMaximumSize(new Dimension(A_SMALL_NUMBER_OF_PIXELS, TOOLBAR_HEIGHT));
 
-        constraints.fill = GridBagConstraints.NONE;
+        constraints.fill = GridBagConstraints.BOTH;
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.weightx = 1.0;
@@ -304,8 +310,8 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.gridwidth = 1;
-        constraints.weightx = 0.15;
+        constraints.gridwidth = 2;
+        constraints.weightx = 1;
         constraints.weighty = 0.01;
         constraints.anchor = GridBagConstraints.LINE_START;
 
@@ -356,6 +362,7 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
         constraints.weightx = 1;
         constraints.weighty = 0.01;
         contentPane.add(statusBar, constraints);
+        contentPane.validate();
     }
 
     private JPanel createHeaderPanel() {
@@ -581,7 +588,7 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
         JPanel filler1 = new JPanel();
         filler1.setOpaque(false);
         filler1.setPreferredSize(new Dimension(4, 20));
-        toolBarPanel.add(filler1);
+        //toolBarPanel.add(filler1);
 
         toolBarPanel.add(yourWalletsPanel);
         toolBarPanel.add(activeWalletPanel);
@@ -603,6 +610,59 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
             application.addPreferencesMenuItem();
             application.setEnabledPreferencesMenu(true);
         }
+        
+        
+        JPanel filler3 = new JPanel();
+        filler3.setOpaque(false);
+        filler3.setPreferredSize(new Dimension(90, 20));
+        toolBarPanel.add(filler3);
+        
+        // TU ZACZYNA SIĘ OT // HEAR STARTED OT
+        
+       // JPanel OT_toolBarPanel = new JPanel();
+       // OT_toolBarPanel.setOpaque(false);
+        
+        JButton ReceiveOT = new JButton(controller.getLocaliser().getString("OT.recieveButtonMain"));
+        ReceiveOT.setIcon(createImageIcon(RECEIVE_BITCOIN_ICON_FILE));
+        ReceiveOT.setHorizontalTextPosition(SwingConstants.TRAILING);
+        ReceiveOT.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.setActionForwardToChild(ActionForward.OT_FORWARD_TO_RECIEVE);
+            }
+        });
+        toolBarPanel.add(ReceiveOT);
+        
+        JButton SendOT = new JButton(controller.getLocaliser().getString("OT.sendButtonMain"));
+        SendOT.setIcon(createImageIcon(SEND_BITCOIN_ICON_FILE));
+        SendOT.setHorizontalTextPosition(SwingConstants.LEADING);
+        SendOT.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.setActionForwardToChild(ActionForward.OT_FORWARD_TO_SEND);
+                /*JFrame jFrame = new JFrame();
+                jFrame.add(new OT_SendPanel1());
+                jFrame.validate();
+                jFrame.setSize(380, 280);
+                jFrame.setLocationRelativeTo(null);
+                jFrame.setVisible(true);*/
+            }
+        });
+        toolBarPanel.add(SendOT);
+        
+//        JPanel contentPanel = new JPanel(new GridLayout(1, 2));
+//        
+//        contentPanel.add(toolBarPanel);
+//        contentPanel.add(OT_toolBarPanel);
+//        contentPanel.setOpaque(false);
+        
+        /*JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, toolBarPanel, OT_toolBarPanel);
+        
+        splitPane.setDividerLocation(.5D);
+        splitPane.setOpaque(false);  */     
+                
         return toolBarPanel;
     }
 

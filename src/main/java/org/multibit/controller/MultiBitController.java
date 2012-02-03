@@ -26,6 +26,7 @@ import com.google.bitcoin.core.Peer;
 import com.google.bitcoin.core.PeerEventListener;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Wallet;
+import fenshi.ot.OT_Controller;
 
 /**
  * the MVC controller for Multibit - this is loosely based on the Apache Struts
@@ -88,7 +89,12 @@ public class MultiBitController implements PeerEventListener {
      */
     private ApplicationDataDirectoryLocator applicationDataDirectoryLocator;
     
-
+    private OT_Controller OTC = new OT_Controller(this);
+    
+    public OT_Controller getOT_Controller(){
+        return OTC;
+    }
+    
     /**
      * used for testing only
      */
@@ -283,6 +289,16 @@ public class MultiBitController implements PeerEventListener {
             nextView = View.RESET_TRANSACTIONS_VIEW;
             break;
         }
+            
+        case OT_FORWARD_TO_SEND:{
+            nextView = View.OT_SEND;
+            break;
+        }
+            
+        case OT_FORWARD_TO_RECIEVE: {
+            nextView = View.OT_RECEIVE;
+            break;
+        }
 
         default: {
             nextView = View.YOUR_WALLETS_VIEW;
@@ -323,7 +339,8 @@ public class MultiBitController implements PeerEventListener {
         if (currentView == View.YOUR_WALLETS_VIEW || currentView == View.TRANSACTIONS_VIEW
                 || currentView == View.RECEIVE_BITCOIN_VIEW || currentView == View.SEND_BITCOIN_VIEW
                 || currentView == View.HELP_ABOUT_VIEW || currentView == View.HELP_CONTENTS_VIEW
-                || currentView == View.PREFERENCES_VIEW) {
+                || currentView == View.PREFERENCES_VIEW
+                || currentView == View.OT_SEND || currentView == View.OT_RECEIVE) {
             clearViewStack();
         }
 
@@ -332,7 +349,7 @@ public class MultiBitController implements PeerEventListener {
 
         // tell all views which view to display
         for (ViewSystem viewSystem : viewSystems) {
-            viewSystem.displayView(currentView);
+            viewSystem.displayView(currentView); // MultiBitFrame
         }
     }
 

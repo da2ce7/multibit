@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
+import org.multibit.controller.MultiBitController;
 import org.multibit.viewsystem.swing.view.BlinkLabel;
 import org.multibit.viewsystem.swing.view.yourwallets.RoundedPanel;
 
@@ -46,6 +47,7 @@ import org.multibit.viewsystem.swing.view.yourwallets.RoundedPanel;
 public class OTWalletPanel extends RoundedPanel implements ActionListener{
     
     protected OT_Controller Controller;
+    protected MultiBitController multicontroller;
     protected LocalWallet LW;
     
     private JLabel walletFilenameLabel;
@@ -64,10 +66,11 @@ public class OTWalletPanel extends RoundedPanel implements ActionListener{
     private static final Dimension ABOVE_BASELINE_LEADING_CORNER_PADDING = new Dimension(5, 12);
     private static final Dimension BELOW_BASELINE_TRAILING_CORNER_PADDING = new Dimension(9, 12);
     
-    public OTWalletPanel(OT_Controller C, LocalWallet localWallet)
+    public OTWalletPanel(OT_Controller C, LocalWallet localWallet, MultiBitController MultiC)
     {
         super(C.getLocale());
-        Controller = C;  
+        Controller = C;
+        multicontroller = MultiC;
         LW = localWallet;
         
         setLayout(new GridBagLayout());
@@ -135,7 +138,7 @@ public class OTWalletPanel extends RoundedPanel implements ActionListener{
         OpenWalletButton = new JButton();
         OpenWalletButton.setBackground(BACKGROUND_COLOR_NORMAL);
         OpenWalletButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
-        OpenWalletButton.setText("Open");
+        OpenWalletButton.setText(multicontroller.getLocaliser().getString("OT.openButton"));
         constraints.fill = GridBagConstraints.NONE;
         constraints.gridx = 1;
         constraints.gridy = 3;
@@ -168,7 +171,7 @@ public class OTWalletPanel extends RoundedPanel implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        InsideWallet insideWallet = new InsideWallet(LW);
+        InsideWallet insideWallet = new InsideWallet(LW, multicontroller);
         insideWallet.setTitle(LW.getName());
         insideWallet.setLocationRelativeTo(this);
         insideWallet.setVisible(true);

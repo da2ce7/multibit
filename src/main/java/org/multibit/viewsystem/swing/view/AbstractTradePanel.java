@@ -893,6 +893,7 @@ public abstract class AbstractTradePanel extends JPanel implements View, DataPro
         addressesTable.getSelectionModel().addListSelectionListener(addressesListener);
     }
 
+    @Override
     public Data getData() {
         Data data = new Data();
 

@@ -25,6 +25,7 @@ package fenshi.ot;
 
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import org.multibit.controller.MultiBitController;
 
 /**
  *
@@ -32,12 +33,34 @@ import javax.swing.table.DefaultTableModel;
  */
 public class InsideWallet extends javax.swing.JFrame {
 
+    protected MultiBitController controller;
     protected LocalWallet LW;
     /**
      * Creates new form InsideWallet
      */
-    public InsideWallet(LocalWallet LW) {
+    public InsideWallet(LocalWallet LW, MultiBitController C) {
         initComponents();
+        controller = C;
+        jLabel1.setText(controller.getLocaliser().getString("InsideWallet.serversLabel"));
+        jLabel2.setText(controller.getLocaliser().getString("InsideWallet.nymsLabel"));
+        jLabel3.setText(controller.getLocaliser().getString("InsideWallet.assetsLabel"));
+        jButton1.setText(controller.getLocaliser().getString("OT.recieveButton"));
+        jButton2.setText(controller.getLocaliser().getString("OT.sendButton"));
+        
+        DefaultTableModel defaultTableModel = new DefaultTableModel(
+                                                      new Object[][]{
+                                                          {"BhD1", "zQ584ZWBqqx5CReL7eW4T8jfV7TwtbkuqG"},
+                                                          {"BhD2", "ToRq17gmCdQWfenShiX46oRG35cNqrIPgB"},
+                                                          {"BhD3", "UmbPn68On8Gk18bi9qVTHWF2QHcB2qVZMT"},
+                                                          {"BhD4", "M6xeONp6FAqFMBLQs7MtwEe48FG8X2LWrm"}
+                                                      },
+                                                      new String[]{
+                                                          controller.getLocaliser().getString("InsideWallet.tablecolumn1Title"),
+                                                          controller.getLocaliser().getString("InsideWallet.tablecolumn2Title")
+                                                      });
+        jTable1.setModel(defaultTableModel);
+        jTable2.setModel(defaultTableModel);
+        jTable3.setModel(defaultTableModel);
         
         this.LW = LW;
         List<Server> servers = LW.getServers();
@@ -119,12 +142,6 @@ public class InsideWallet extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -132,6 +149,9 @@ public class InsideWallet extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addGap(6, 6, 6))
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton1, jButton2});
@@ -163,44 +183,7 @@ public class InsideWallet extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /*
-         * Set the Nimbus look and feel
-         */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /*
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the
-         * default look and feel. For details see
-         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InsideWallet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InsideWallet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InsideWallet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InsideWallet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /*
-         * Create and display the form
-         */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                new InsideWallet(null).setVisible(true);
-            }
-        });
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

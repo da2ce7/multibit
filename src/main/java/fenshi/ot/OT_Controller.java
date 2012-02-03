@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Locale;
 import javax.swing.JOptionPane;
+import org.multibit.controller.MultiBitController;
 
 /**
  *
@@ -37,7 +38,7 @@ import javax.swing.JOptionPane;
 public class OT_Controller {
     //public static JFLogger L;
     static PrintStream FW;
-    
+    protected MultiBitController multicontroller;
     protected LocalWallet LW;
     
     public void init()
@@ -45,6 +46,9 @@ public class OT_Controller {
         OTApi.OT_API_Init("./wallets");
         loadWallet("default.xml");
         
+    }
+    public OT_Controller(MultiBitController multiC){
+        multicontroller = multiC;
     }
     
     //Obsługa błedów bez konsoli
@@ -121,7 +125,7 @@ public class OT_Controller {
     }
     
     public OTWalletsPanel createPanel(){
-        return new OTWalletsPanel(this);
+        return new OTWalletsPanel(this, multicontroller);
     }
     
     public Locale getLocale(){

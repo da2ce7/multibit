@@ -156,7 +156,7 @@ public class BitcoinURI {
             return "";
         }
         
-        stringBuffer = new StringBuffer("bitcoin:");
+        stringBuffer = new StringBuffer(BITCOIN_PREFIX);
         
         stringBuffer.append(address);
         
@@ -175,6 +175,39 @@ public class BitcoinURI {
         }
         return stringBuffer.toString();
     }
+    
+    /*public static String convertToOTURI(String address, String amount, String asset,String label) {
+        if (address == null) {
+            return "";
+        }
+        
+        stringBuffer = new StringBuffer("ot:");
+        
+        stringBuffer.append(address);
+        
+        boolean haveOutputQuestionMark = false;
+        if (amount != null && amount.length() > 0) {
+            stringBuffer.append("?amount=").append(amount);
+            haveOutputQuestionMark = true;
+        }
+        
+        if (label != null && label.length() > 0) {
+            if (haveOutputQuestionMark) {
+                stringBuffer.append("&label=").append(label);                               
+            } else {
+                stringBuffer.append("?label=").append(label);
+            }
+        }
+        
+        if(asset != null && asset.length() > 0) {
+            if (haveOutputQuestionMark) {
+                stringBuffer.append("&asset=").append(asset);                               
+            } else {
+                stringBuffer.append("?asset=").append(asset);
+            }
+        }
+        return stringBuffer.toString();
+    }*/
     
     public Address getAddress() {
         return address;

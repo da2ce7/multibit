@@ -42,6 +42,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.google.zxing.qrcode.encoder.ByteMatrix;
 import com.google.zxing.qrcode.encoder.Encoder;
 import com.google.zxing.qrcode.encoder.QRCode;
+import fenshi.ot.OT_URI;
 
 /**
  * Class to generate swatches (QR codes + text of QR code in an image)
@@ -116,6 +117,214 @@ public class SwatchGenerator {
         JFrame frame = new JFrame();
     }
 
+    public BufferedImage generateOTSwatch(OT_URI U) {
+        // long time0 = (new Date()).getTime();
+        String bitcoinURI = OT_URI.URIToString(U);
+
+        // get a byte matrix for the data
+        ByteMatrix matrix;
+        try {
+            matrix = encode(bitcoinURI);
+        } catch (com.google.zxing.WriterException e) {
+            // exit the method
+            return null;
+        } catch (IllegalArgumentException e) {
+            // exit the method
+            return null;
+        }
+
+        boolean addAmount;
+        if (U.Amount == null || "".equals(U.Amount)) {
+            addAmount = false;
+        } else {
+            addAmount = true;
+        }
+
+        if (U.Label== null) {
+            U.Label = "";
+        }
+
+        // generate an image from the byte matrix
+        int matrixWidth = matrix.getWidth();
+        int matrixHeight = matrix.getHeight();
+
+        int addressAdvance = getAdvance(emptyGraphics, U.Address, addressFont);
+        int amountAdvance = 0;
+        if (addAmount) {
+            amountAdvance = getAdvance(emptyGraphics,
+                    U.Amount + " " + "BTC", amountFont);
+        }
+        // convert backslash-rs to backslash-ns
+        U.Label = U.Label.replaceAll("\r\n", "\n");
+        U.Label = U.Label.replaceAll("\n\r", "\n");
+        String[] labelLines = U.Label.split("[\\n\\r]");
+
+        int maxLabelAdvance = 0;
+
+        if (labelLines != null) {
+            for (int i = 0; i < labelLines.length; i++) {
+                int labelAdvance = getAdvance(emptyGraphics, labelLines[i], labelFont);
+                if (labelAdvance > maxLabelAdvance) {
+                    maxLabelAdvance = labelAdvance;
+                }
+            }
+        }
+
+        int widestTextAdvance = (int) Math.max(Math.max(addressAdvance, amountAdvance), maxLabelAdvance);
+        int swatchWidth = matrixWidth + widestTextAdvance + LEFT_TEXT_INSET + RIGHT_TEXT_INSET + WIDTH_OF_TEXT_BORDER * 2
+                + QUIET_ZONE_SIZE;
+
+        // work out the height of the swatch
+        int minimumBoxHeight = TOP_TEXT_INSET + BOTTOM_TEXT_INSET + 2 * (QUIET_ZONE_SIZE + WIDTH_OF_TEXT_BORDER)
+                + GAP_ABOVE_ADDRESS + addressFont.getSize();
+        if (addAmount) {
+            minimumBoxHeight = minimumBoxHeight + GAP_BETWEEN_TEXT_ROWS + amountFont.getSize();
+        }
+
+        if (labelLines != null) {
+            minimumBoxHeight = minimumBoxHeight + labelLines.length * (labelFont.getSize() + GAP_BETWEEN_TEXT_ROWS - 1);
+        }
+
+        int swatchHeight;
+        if (minimumBoxHeight > matrixHeight) {
+            swatchHeight = minimumBoxHeight;
+        } else {
+            swatchHeight = matrixHeight;
+        }
+
+        // create buffered image to draw to
+        BufferedImage image = new BufferedImage(swatchWidth, swatchHeight, BufferedImage.TYPE_INT_RGB);
+
+        // iterate through the matrix and draw the pixels to the image
+        int qrCodeVerticalOffset = 0;
+        if (swatchHeight > matrixHeight) {
+            qrCodeVerticalOffset = (int) ((swatchHeight - matrixHeight) * 0.5);
+        }
+        int matrixHorizontalOffset = 0;
+        if (!ComponentOrientation.getOrientation(Locale.ENGLISH).isLeftToRight()) {
+            matrixHorizontalOffset = swatchWidth - matrixWidth;
+        }
+
+        int textBoxHorizontalOffset = matrixWidth;
+        if (!ComponentOrientation.getOrientation(Locale.ENGLISH).isLeftToRight()) {
+            textBoxHorizontalOffset = QUIET_ZONE_SIZE;
+        }
+
+        for (int y = 0; y < matrixHeight; y++) {
+            for (int x = 0; x < matrixWidth; x++) {
+                byte imageValue = matrix.get(x, y);
+                image.setRGB(x + matrixHorizontalOffset, y + qrCodeVerticalOffset, imageValue);
+            }
+        }
+
+        // fill in the rest of the image as white
+        for (int y = 0; y < swatchHeight; y++) {
+            if (matrixHorizontalOffset == 0) {
+                for (int x = matrixWidth; x < swatchWidth; x++) {
+                    image.setRGB(x, y, 0xFFFFFF);
+                }
+            } else {
+                for (int x = 0; x < swatchWidth - matrixWidth; x++) {
+                    image.setRGB(x, y, 0xFFFFFF);
+                }
+            }
+        }
+        if (swatchHeight > matrixHeight) {
+            for (int y = 0; y < qrCodeVerticalOffset; y++) {
+                for (int x = 0; x < swatchWidth; x++) {
+                    image.setRGB(x, y, 0xFFFFFF);
+                }
+            }
+
+            for (int y = matrixHeight + qrCodeVerticalOffset; y < swatchHeight; y++) {
+                for (int x = 0; x < swatchWidth; x++) {
+                    image.setRGB(x, y, 0xFFFFFF);
+                }
+            }
+        }
+
+        // draw the text box
+        for (int y = QUIET_ZONE_SIZE; y < swatchHeight - QUIET_ZONE_SIZE; y++) {
+            for (int loopX = 0; loopX < WIDTH_OF_TEXT_BORDER; loopX++) {
+                // left hand side
+                image.setRGB(textBoxHorizontalOffset + loopX, y, 0x000000);
+
+                // right hand side
+                if (ComponentOrientation.getOrientation(Locale.ENGLISH).isLeftToRight()) {
+                    image.setRGB(swatchWidth - QUIET_ZONE_SIZE - loopX - 1, y, 0x000000);
+                } else {
+                    image.setRGB(swatchWidth - matrixWidth - loopX - 1, y, 0x000000);
+                }
+            }
+        }
+
+        for (int x = textBoxHorizontalOffset + QUIET_ZONE_SIZE - WIDTH_OF_TEXT_BORDER; x < swatchWidth - QUIET_ZONE_SIZE - matrixWidth + textBoxHorizontalOffset; x++) {
+            for (int loopY = 0; loopY < WIDTH_OF_TEXT_BORDER; loopY++) {
+                // top side
+                image.setRGB(x, QUIET_ZONE_SIZE + loopY, 0x000000);
+
+                // bottom side
+                image.setRGB(x, swatchHeight - QUIET_ZONE_SIZE - loopY - 1, 0x000000);
+            }
+        }
+
+        Graphics2D g2 = image.createGraphics();
+
+        g2.setColor(Color.black);
+        g2.setFont(addressFont);
+
+        // right justified
+        g2.drawString(U.Address, swatchWidth - QUIET_ZONE_SIZE - WIDTH_OF_TEXT_BORDER - RIGHT_TEXT_INSET - addressAdvance
+                - matrixWidth + textBoxHorizontalOffset, swatchHeight - QUIET_ZONE_SIZE - WIDTH_OF_TEXT_BORDER - BOTTOM_TEXT_INSET);
+
+        g2.setFont(labelFont);
+        if (labelLines != null) {
+            for (int i = 0; i < labelLines.length; i++) {
+                if (ComponentOrientation.getOrientation(Locale.ENGLISH).isLeftToRight()) {
+                    // left justified
+                    g2.drawString(labelLines[i], textBoxHorizontalOffset + QUIET_ZONE_SIZE + WIDTH_OF_TEXT_BORDER,
+                            QUIET_ZONE_SIZE + TOP_TEXT_INSET + labelFont.getSize() + i
+                                    * (labelFont.getSize() + GAP_BETWEEN_TEXT_ROWS));
+                } else {
+                    // right justified
+                    int leftEdge = swatchWidth - matrixWidth - WIDTH_OF_TEXT_BORDER - RIGHT_TEXT_INSET
+                            - getAdvance(emptyGraphics, labelLines[i], labelFont);
+                    g2.drawString(labelLines[i], leftEdge, QUIET_ZONE_SIZE + TOP_TEXT_INSET + labelFont.getSize() + i
+                            * (labelFont.getSize() + GAP_BETWEEN_TEXT_ROWS));
+                }
+            }
+            if (addAmount) {
+                g2.setFont(amountFont);
+
+                // bottom right justified
+                if (ComponentOrientation.getOrientation(Locale.ENGLISH).isLeftToRight()) {
+                    g2.drawString(U.Amount + " BTC",
+                            swatchWidth - QUIET_ZONE_SIZE - WIDTH_OF_TEXT_BORDER - RIGHT_TEXT_INSET - amountAdvance,
+                            swatchHeight - QUIET_ZONE_SIZE - WIDTH_OF_TEXT_BORDER - BOTTOM_TEXT_INSET - addressFont.getSize()
+                                    - GAP_ABOVE_ADDRESS);
+                } else {
+                    // bottom right justified, with swatch to right
+                    g2.drawString(U.Amount + " BTC",
+                            swatchWidth - matrixWidth - WIDTH_OF_TEXT_BORDER - RIGHT_TEXT_INSET
+                                    - amountAdvance, swatchHeight - QUIET_ZONE_SIZE - WIDTH_OF_TEXT_BORDER - BOTTOM_TEXT_INSET
+                                    - addressFont.getSize() - GAP_ABOVE_ADDRESS);
+                }
+            }
+        } else {
+            if (addAmount) {
+                g2.setFont(amountFont);
+                     // left justified, no swatch
+                    g2.drawString(U.Amount + " BTC",
+                            textBoxHorizontalOffset + QUIET_ZONE_SIZE + WIDTH_OF_TEXT_BORDER,
+                            QUIET_ZONE_SIZE + TOP_TEXT_INSET + amountFont.getSize());
+            }
+        }
+        // long time1 = (new Date()).getTime();
+        // System.out.println("SwatchGenerator#generateSwatch took " + (time1 -
+        // time0) + " millisec");
+        return image;
+    }
+    
     /**
      * generate a Swatch
      * 

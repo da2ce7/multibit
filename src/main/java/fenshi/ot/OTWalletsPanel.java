@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import org.multibit.controller.MultiBitController;
 import org.multibit.viewsystem.swing.view.yourwallets.WrapLayout;
 
 /**
@@ -41,20 +42,26 @@ import org.multibit.viewsystem.swing.view.yourwallets.WrapLayout;
 public class OTWalletsPanel extends javax.swing.JPanel implements MouseListener {
 
     protected OT_Controller controller;
+    protected MultiBitController multicontroller;
     protected List<OTWalletPanel> L = new ArrayList<OTWalletPanel>();
     
     /**
      * Creates new form OTWalletsPanel
      */
-    public OTWalletsPanel(OT_Controller C) {
+    public OTWalletsPanel(OT_Controller C, MultiBitController multiC) {
         initComponents();
+        multicontroller=multiC;
         jPanel1.setLayout(new WrapLayout(FlowLayout.LEFT, 1, 1));
         controller = C;
       jPanel1.addMouseListener(this);
+      
+      jButton1.setText(multicontroller.getLocaliser().getString("OT.openButton"));
+      jButton2.setText(multicontroller.getLocaliser().getString("OT.newButton"));
+      jButton3.setText(multicontroller.getLocaliser().getString("OT.closeButton"));
     }
     
     public void AddWallet(LocalWallet W){
-        OTWalletPanel P = new OTWalletPanel(controller, W);
+        OTWalletPanel P = new OTWalletPanel(controller, W, multicontroller);
         jPanel1.add(P);
         L.add(P);
         P.addMouseListener(this);

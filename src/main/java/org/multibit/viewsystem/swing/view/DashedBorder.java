@@ -4,7 +4,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.util.Locale;
 
-class DashedBorder implements Border {
+public class DashedBorder implements Border {
     public static final int THICKNESS = 2;
     Color color;
     int dashWidth;
