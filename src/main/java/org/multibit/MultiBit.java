@@ -69,6 +69,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.bitcoin.core.StoredBlock;
 import com.google.bitcoin.core.Wallet;
+import org.multibit.controller.ot.OTController;
+import org.multibit.model.ot.OTModel;
 
 /**
  * Main MultiBit entry class.
@@ -83,6 +85,8 @@ public class MultiBit {
     private static CoreController coreController = null;
     private static BitcoinController bitcoinController = null;
     private static ExchangeController exchangeController = null;
+    
+    private static OTController otController = null; // Open Transactions
     
     public static Controller getController() {
         return controller;
@@ -100,6 +104,11 @@ public class MultiBit {
         return exchangeController;
     }
     
+    // Open Transactions
+    public static OTController getOTController() {
+        return otController;
+    }
+    
     /**
      * Used in testing
      */
@@ -115,6 +124,12 @@ public class MultiBit {
      public static void setExchangeController(ExchangeController exchangeController) {
         MultiBit.exchangeController = exchangeController;
     }
+     
+     // Open Transactions
+     public static void setOTController(OTController otController) {
+        MultiBit.otController = otController;
+    }
+     
     
     /**
      * Start MultiBit user interface.
@@ -151,6 +166,7 @@ public class MultiBit {
             controller = coreController;
             bitcoinController = new BitcoinController(coreController);
             exchangeController = new ExchangeController(coreController);
+            otController =  new OTController(coreController);
 
 
             log.info("Configuring native event handling");
@@ -216,9 +232,11 @@ public class MultiBit {
             final CoreModel coreModel = new CoreModel(userPreferences);
             final BitcoinModel model = new BitcoinModel(coreModel);
             final ExchangeModel exchangeModel = new ExchangeModel(coreModel);
+            final OTModel otModel = new OTModel(coreModel);
                 coreController.setModel(coreModel);
                 bitcoinController.setModel(model);
                 exchangeController.setModel(exchangeModel);
+                otController.setModel(otModel);
             }
 
             // Trust all HTTPS certificates.

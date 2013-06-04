@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Cameron Garnham.
+ * Copyright 2013 Cameron Garnham <da2ce7@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.multibit.model;
+package org.multibit.model.ot;
+
+import org.multibit.model.AbstractModel;
+import org.multibit.model.ModelEnum;
+import org.multibit.model.core.CoreModel;
 
 /**
  *
- * @author Cameron Garnham
+ * @author Cameron Garnham <da2ce7@gmail.com>
  */
-public enum ModelEnum {
-    CORE,
-    BITCOIN,
-    EXCHANGE,
-    MULTIBIT,
-    OPENTRANSACTIONS
+public class OTModel extends AbstractModel<CoreModel> {
+
+    public OTModel(CoreModel coreModel) {
+        super(coreModel);
+    }
+
+    @Override
+    public ModelEnum getModelEnum() {
+        return ModelEnum.OPENTRANSACTIONS;
+    }
 }
