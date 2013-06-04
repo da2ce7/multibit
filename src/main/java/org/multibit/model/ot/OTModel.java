@@ -31,8 +31,8 @@ import org.multibit.model.core.CoreModel;
  *
  * @author Cameron Garnham <da2ce7@gmail.com>
  */
-public class OTModel extends AbstractModel<CoreModel> {
-
+public class OTModel extends AbstractModel<CoreModel> {  
+    
     public OTModel(CoreModel coreModel) {
         super(coreModel);
     }

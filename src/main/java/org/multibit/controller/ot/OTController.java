@@ -23,12 +23,19 @@
  */
 package org.multibit.controller.ot;
 
+import java.awt.Dialog;
 import java.net.URI;
+import javax.swing.JDialog;
 import org.multibit.controller.AbstractController;
 import org.multibit.controller.AbstractEventHandler;
 import org.multibit.controller.core.CoreController;
 import org.multibit.model.ot.OTModel;
 import org.multibit.viewsystem.swing.core.actions.ExitAction;
+import org.opentransactions.otapi.OTCallback;
+import org.opentransactions.otapi.OTPassword;
+import org.opentransactions.otjavalib.Load.IJavaPath;
+import org.opentransactions.otjavalib.Load.IPasswordImage;
+import org.opentransactions.otjavalib.util.Utility;
 
 /**
  *
@@ -38,6 +45,10 @@ public class OTController extends AbstractController<CoreController> {
 
     private final OTController.EventHandler eventHandler;
     private OTModel model;
+    
+    private final OTPathCallback otPathCallback =  new OTPathCallback();
+    private final PasswordImageCallback passwordImageCallback = new PasswordImageCallback();
+    private final OTPasswordCallback otPasswordCallback = new OTPasswordCallback();
 
     public OTController(CoreController coreController) {
         super(coreController);
@@ -59,6 +70,79 @@ public class OTController extends AbstractController<CoreController> {
     public void setModel(OTModel model) {
         this.model = model;
     }
+    
+    public IJavaPath getJavaPathCallback()
+    {
+        return this.otPathCallback;
+    }
+
+    private class OTPathCallback implements IJavaPath {
+
+        @Override
+        public Boolean GetIfUserCancelled() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public String GetJavaPathFromUser(String message) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+    
+    public IPasswordImage getPasswordImageCallback()
+    {
+        return this.passwordImageCallback;
+    }
+    
+    private class  PasswordImageCallback implements IPasswordImage {
+
+        @Override
+        public Boolean GetIfUserCancelled() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public String GetPasswordImageFromUser(String message) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public boolean SetPasswordImage(String path) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+    
+    public OTCallback getOTCallback() {
+        return this.otPasswordCallback;
+    }
+    
+    private class OTPasswordCallback extends OTCallback {
+
+        @Override
+        public void runOne(String szDisplay, OTPassword theOutput) {
+            if (null == theOutput) {
+                System.out.println("JavaCallback.runOne: Failure: theOutput variable (for password to be returned) is null!");
+                return;
+            }
+            if (!Utility.VerifyStringVal(szDisplay)) {
+                System.out.println("JavaCallback.runOne: Failure: strDisplay string (telling you what password to type) is null!");
+                return;
+            }
+        }
+
+        @Override
+        public void runTwo(String szDisplay, OTPassword theOutput) {
+            if (null == theOutput) {
+                System.out.println("JavaCallback.runTwo: Failure: theOutput variable (for password to be returned) is null!");
+                return;
+            }
+            if (!Utility.VerifyStringVal(szDisplay)) {
+                System.out.println("JavaCallback.runOne: Failure: strDisplay string (telling you what password to type) is null!");
+                return;
+            }
+        }
+    }
+    
 
     private class EventHandler extends AbstractEventHandler<OTController> {
 

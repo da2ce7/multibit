@@ -222,7 +222,7 @@ public class MultiBitService {
         log.error("Error creating MultiBitService " + e.getClass().getName() + " " + e.getMessage());
     }
 
-    private BlockStore createBlockStore(Date checkpointDate, boolean createNew, boolean isReplay) throws BlockStoreException, IOException {
+        private BlockStore createBlockStore(Date checkpointDate, boolean createNew, boolean isReplay) throws BlockStoreException, IOException {
         BlockStore blockStore = null;
 
         String filePrefix = getFilePrefix();
