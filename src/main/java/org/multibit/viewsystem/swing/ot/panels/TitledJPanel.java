@@ -61,6 +61,8 @@ public class TitledJPanel extends JPanel {
         super.setOpaque(false);
         super.setFont(font);
         
+        this.titleLabel.setComponentOrientation(componentOrientation);
+        
         final TransGradientPanel transGradientPanel = new TransGradientPanel(componentOrientation);
         transGradientPanel.setLayout(new GridBagLayout());
         
@@ -78,13 +80,15 @@ public class TitledJPanel extends JPanel {
         constraints.weightx = 1;
         constraints.weighty = 1;
         transGradientPanel.add(new Filler(MIN_SIZE, MIN_SIZE, MAX_SIZE), constraints);
-        transGradientPanel.add(titleLabel, constraints);
+        transGradientPanel.add(this.titleLabel, constraints);
         transGradientPanel.add(new Filler(MIN_SIZE, MIN_SIZE, MAX_SIZE), constraints);
-        
         super.add(transGradientPanel,constraints);
     }
     
     public void setTitle(String title) {
         this.titleLabel.setText(title);
     }
+    
+    
+    
 }

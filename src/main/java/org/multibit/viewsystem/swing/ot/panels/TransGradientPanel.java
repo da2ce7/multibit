@@ -49,7 +49,7 @@ class TransGradientPanel extends JPanel {
     
     TransGradientPanel(final ComponentOrientation componentOrientation) {
         this.componentOrientation = componentOrientation;
-        
+        super.setComponentOrientation(componentOrientation);
         super.setOpaque(false);
     }
     
