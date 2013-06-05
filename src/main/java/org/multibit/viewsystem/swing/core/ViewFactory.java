@@ -23,6 +23,7 @@ import org.multibit.controller.Controller;
 import org.multibit.controller.bitcoin.BitcoinController;
 import org.multibit.controller.core.CoreController;
 import org.multibit.controller.exchange.ExchangeController;
+import org.multibit.controller.ot.OTController;
 import org.multibit.viewsystem.View;
 import org.multibit.viewsystem.Viewable;
 import org.multibit.viewsystem.swing.MultiBitFrame;
@@ -44,6 +45,7 @@ import org.multibit.viewsystem.swing.bitcoin.panels.VerifyMessagePanel;
 import org.multibit.viewsystem.swing.preferences.PreferencesPanel;
 import org.multibit.viewsystem.swing.bitcoin.panels.TransactionsPanel;
 import org.multibit.viewsystem.swing.core.panels.WelcomePanel;
+import org.multibit.viewsystem.swing.ot.panels.ChangePasswordImage;
 import org.multibit.viewsystem.swing.preferences.PreferencesAction;
 import org.multibit.viewsystem.swing.preferences.PreferencesModule;
 import org.multibit.viewsystem.swing.preferences.actions.BitcoinPreferencesAction;
@@ -66,13 +68,15 @@ public class ViewFactory {
     private final CoreController coreController;
     private final BitcoinController bitcoinController;
     private final ExchangeController exchangeController;
+    private final OTController otController;
     private final MultiBitFrame mainFrame;
 
-    public ViewFactory(MultiBitFrame mainFrame, CoreController coreController, BitcoinController bitcoinController, ExchangeController exchangeController) {
+    public ViewFactory(MultiBitFrame mainFrame, CoreController coreController, BitcoinController bitcoinController, ExchangeController exchangeController, final OTController otController) {
         this.mainFrame = mainFrame;
         this.coreController = coreController;
         this.bitcoinController = bitcoinController;
         this.exchangeController = exchangeController;
+        this.otController = otController;
         this.controller = this.coreController;
         initialise();
     }
@@ -212,6 +216,10 @@ public class ViewFactory {
                 viewToReturn = new PreferencesPanel(this.mainFrame, this.controller, preferencesModules, preferencesActions);
                 break;
             }
+                
+                
+            case OT_CHANGE_PASSWORD_IMAGE :
+                viewToReturn = new ChangePasswordImage(this.mainFrame, this.otController);
 
             default: {
             }

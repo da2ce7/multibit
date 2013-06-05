@@ -30,6 +30,7 @@ import org.multibit.controller.AbstractController;
 import org.multibit.controller.AbstractEventHandler;
 import org.multibit.controller.core.CoreController;
 import org.multibit.model.ot.OTModel;
+import org.multibit.viewsystem.View;
 import org.multibit.viewsystem.swing.core.actions.ExitAction;
 import org.opentransactions.otapi.OTCallback;
 import org.opentransactions.otapi.OTPassword;
@@ -46,9 +47,13 @@ public class OTController extends AbstractController<CoreController> {
     private final OTController.EventHandler eventHandler;
     private OTModel model;
     
-    private final OTPathCallback otPathCallback =  new OTPathCallback();
     private final PasswordImageCallback passwordImageCallback = new PasswordImageCallback();
-    private final OTPasswordCallback otPasswordCallback = new OTPasswordCallback();
+    private final OTPathCallback otPathCallback = new OTPathCallback();
+    
+    private OTPasswordCallback otPasswordCallback = null;
+    
+    
+    
 
     public OTController(CoreController coreController) {
         super(coreController);
@@ -70,17 +75,18 @@ public class OTController extends AbstractController<CoreController> {
     public void setModel(OTModel model) {
         this.model = model;
     }
-    
-    public IJavaPath getJavaPathCallback()
-    {
+
+    public IJavaPath getJavaPathCallback() {
         return this.otPathCallback;
     }
 
     private class OTPathCallback implements IJavaPath {
 
+        private transient Boolean userCancelled = false;
+        
         @Override
         public Boolean GetIfUserCancelled() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return this.userCancelled;
         }
 
         @Override
@@ -88,22 +94,45 @@ public class OTController extends AbstractController<CoreController> {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
-    
-    public IPasswordImage getPasswordImageCallback()
+
+    public final Boolean UpdatePasswordImagePath(String message)
     {
-        return this.passwordImageCallback;
+        String passwordImagePath = this.getModel().getPasswordImagePath();
+        if (null == passwordImagePath) super.displayView(View.OT_CHANGE_PASSWORD_IMAGE);
+        return true;
     }
     
-    private class  PasswordImageCallback implements IPasswordImage {
+    
+    public IPasswordImage getPasswordImageCallback() {
+        return this.passwordImageCallback;
+    }
 
+    private class PasswordImageCallback implements IPasswordImage {
+
+        private transient Boolean userCancelled = false;
+        
         @Override
         public Boolean GetIfUserCancelled() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return this.userCancelled;
         }
 
         @Override
         public String GetPasswordImageFromUser(String message) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            if (!UpdatePasswordImagePath(message))
+            {
+                this.userCancelled = true;
+                return getModel().getPasswordImagePath();
+            }
+            
+            {
+                final String passwordImagePath = getModel().getPasswordImagePath();
+                if (null != passwordImagePath) {
+                    return passwordImagePath;
+                }
+            }
+            // if we get here we need to get the path from the users.
+            return null;
+            
         }
 
         @Override
@@ -111,11 +140,14 @@ public class OTController extends AbstractController<CoreController> {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
-    
+
     public OTCallback getOTCallback() {
+        if (null == this.otPasswordCallback) {
+            this.otPasswordCallback = new OTPasswordCallback();
+        }
         return this.otPasswordCallback;
     }
-    
+
     private class OTPasswordCallback extends OTCallback {
 
         @Override
@@ -128,6 +160,7 @@ public class OTController extends AbstractController<CoreController> {
                 System.out.println("JavaCallback.runOne: Failure: strDisplay string (telling you what password to type) is null!");
                 return;
             }
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
@@ -140,9 +173,9 @@ public class OTController extends AbstractController<CoreController> {
                 System.out.println("JavaCallback.runOne: Failure: strDisplay string (telling you what password to type) is null!");
                 return;
             }
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
-    
 
     private class EventHandler extends AbstractEventHandler<OTController> {
 

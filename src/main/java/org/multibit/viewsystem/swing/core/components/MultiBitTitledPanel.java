@@ -42,7 +42,7 @@ public class MultiBitTitledPanel extends JPanel {
 
         Font font = FontSizer.INSTANCE.getAdjustedDefaultFont();
         setFont(font);
-
+        
         FontMetrics fontMetrics = getFontMetrics(font);
 
         int preferredHeight = (int)(fontMetrics.getHeight() * 1.618);

@@ -51,7 +51,11 @@ public enum View {
     REMOVE_PASSWORD_VIEW,
     CHARTS_VIEW,
     VERIFY_MESSAGE_VIEW,
-    SIGN_MESSAGE_VIEW;
+    SIGN_MESSAGE_VIEW,
+    
+    OT_CHANGE_PASSWORD_IMAGE
+    
+    ;
 
     public static final EnumSet<View> OBSOLETE = EnumSet.of(
             SEND_BITCOIN_CONFIRM_VIEW,

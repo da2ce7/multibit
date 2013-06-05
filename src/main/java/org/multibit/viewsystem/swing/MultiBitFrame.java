@@ -124,6 +124,7 @@ import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Wallet;
 
 import org.bitcoinj.wallet.Protos.Wallet.EncryptionType;
+import org.multibit.controller.ot.OTController;
 
 
 /*
@@ -159,6 +160,7 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
     private final CoreController coreController;
     private final BitcoinController bitcoinController;
     private final ExchangeController exchangeController;
+    private final OTController otController;
     
     private Localiser localiser;
 
@@ -258,10 +260,11 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
     private static FireDataChangedTimerTask fireDataChangedTimerTask;
 
     @SuppressWarnings("deprecation")
-    public MultiBitFrame(CoreController coreController, BitcoinController bitcoinController, ExchangeController exchangeController, GenericApplication application, View initialView) {
+    public MultiBitFrame(CoreController coreController, BitcoinController bitcoinController, ExchangeController exchangeController, final OTController otController, GenericApplication application, View initialView) {
         this.coreController = coreController;
         this.bitcoinController = bitcoinController;
         this.exchangeController = exchangeController;
+        this.otController = otController;
         this.controller = this.coreController;
         
         this.quitEventListener = this.coreController;
@@ -308,7 +311,7 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
 
         sizeAndCenter();
 
-        viewFactory = new ViewFactory(this, this.coreController, this.bitcoinController, this.exchangeController);
+        viewFactory = new ViewFactory(this, this.coreController, this.bitcoinController, this.exchangeController, this.otController);
 
         initUI(initialView);
 
@@ -788,6 +791,14 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
         helpMenu.setComponentOrientation(componentOrientation);
         helpMenu.setMnemonic(mnemonicUtil.getMnemonic("multiBitFrame.helpMenuMnemonic"));
         menuBar.add(helpMenu);
+        
+        // Build the OT menu.
+        final JMenu otMenu = new JMenu(localiser.getString("ot.multiBitFrame.otMenu.text"));
+        otMenu.setFont(FontSizer.INSTANCE.getAdjustedDefaultFont());
+        otMenu.setComponentOrientation(componentOrientation);
+        otMenu.setMnemonic(mnemonicUtil.getMnemonic("ot.multiBitFrame.otMenu.MenuMnemonic"));
+        menuBar.add(otMenu);
+
 
         // Create new wallet action.
         CreateWalletSubmitAction createNewWalletAction = new CreateWalletSubmitAction(this.bitcoinController,
@@ -1087,6 +1098,19 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
         menuItem.setFont(FontSizer.INSTANCE.getAdjustedDefaultFont());
         menuItem.setComponentOrientation(componentOrientation);
         toolsMenu.add(menuItem);
+        
+        
+        // Open Transactions Actions
+        
+        // Change PasswordImage Action
+        final MultiBitAction changePasswordImageAction = new MultiBitAction(controller, ImageLoader.CHANGE_PASSWORD_ICON_FILE, "ot.changePasswordImage.title",
+                "ot.changePasswordImage.tooltip", "ot.changePasswordImage.mnemonic", View.OT_CHANGE_PASSWORD_IMAGE);
+        menuItem = new JMenuItem(changePasswordImageAction);
+        changePasswordImageAction.putValue(Action.SHORT_DESCRIPTION, HelpContentsPanel.createTooltipTextForMenuItem(controller.getLocaliser().getString("ot.changePasswordImage.tooltip")));
+
+        menuItem.setFont(FontSizer.INSTANCE.getAdjustedDefaultFont());
+        menuItem.setComponentOrientation(componentOrientation);
+        otMenu.add(menuItem);
 
         setJMenuBar(menuBar);
 
